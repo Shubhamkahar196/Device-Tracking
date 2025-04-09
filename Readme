@@ -19,7 +19,7 @@ Installation
 
 Usage
 
-1. Open multiple browser tabs or windows and navigate to http://localhost:3000.
+1. Open multiple browser tabs or windows and navigate to http://localhost:3000/
 2. Allow location sharing when prompted.
 3. The map will display the locations of all connected users in real-time.
 
