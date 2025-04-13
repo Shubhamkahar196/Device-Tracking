@@ -1,0 +1,39 @@
+Real-Time Location Tracking Project
+
+Overview
+
+This project is a real-time location tracking system built using Socket.IO, Leaflet, and JavaScript. It allows multiple users to share their locations in real-time, and displays their locations on a map.
+
+Features
+
+- Real-time location sharing
+- Multiple user support
+- Interactive map display
+- Automatic user disconnection handling
+
+Installation
+
+1. Clone the repository to your local machine using git clone.
+2. Run npm install to install the required dependencies.
+3. Start the server using node app.js.
+
+Usage
+
+1. Open multiple browser tabs or windows and navigate to http://localhost:3000/
+2. Allow location sharing when prompted.
+3. The map will display the locations of all connected users in real-time.
+
+Technologies Used
+
+- Socket.IO for real-time communication
+- Leaflet for interactive map display
+- JavaScript for client-side logic
+- Node.js for server-side logic
+
+Contributing
+
+Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request.
+
+License
+
+This project is licensed under the MIT License. See LICENSE for details.
