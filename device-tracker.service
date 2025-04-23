@@ -1,0 +1,13 @@
+[Unit]
+Description=Real-Time Device Tracker
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/%u/start-device-tracker.sh
+Restart=on-failure
+User=%u
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

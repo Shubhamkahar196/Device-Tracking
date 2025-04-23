@@ -31,7 +31,8 @@ io.on("connection", (socket) => {
 // Handle GET request to root URL
 app.get("/", (req, res) => {
   // Render index.ejs template
-  res.render("index.ejs");
+  const deviceName = process.env.DEVICE_NAME || "Unnamed Device";
+  res.render("index.ejs", { deviceName });
 });
 
 // Start server on port 3000
