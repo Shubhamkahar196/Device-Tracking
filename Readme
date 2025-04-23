@@ -1,39 +1,173 @@
-Real-Time Location Tracking Project
+# 📡 Device-Tracking – Full Setup & Usage Guide
 
-Overview
+This guide explains how to install, configure, and run the **Device-Tracking** project as a Linux service that:
 
-This project is a real-time location tracking system built using Socket.IO, Leaflet, and JavaScript. It allows multiple users to share their locations in real-time, and displays their locations on a map.
+- Starts automatically on boot
+- Uses your **Linux username** as the device name (via `whoami`)
+- Displays your real-time location on a map
 
-Features
+---
 
-- Real-time location sharing
-- Multiple user support
-- Interactive map display
-- Automatic user disconnection handling
+## 🧱 Requirements
 
-Installation
+- Ubuntu or Debian-based Linux
+- `nvm` (Node Version Manager)
+- Node.js v20+
+- systemd (comes pre-installed)
 
-1. Clone the repository to your local machine using git clone.
-2. Run npm install to install the required dependencies.
-3. Start the server using node app.js.
+---
 
-Usage
+## 📁 Project Structure (Already Included)
 
-1. Open multiple browser tabs or windows and navigate to http://localhost:3000/
-2. Allow location sharing when prompted.
-3. The map will display the locations of all connected users in real-time.
+Make sure your folder looks like this:
 
-Technologies Used
+```
+~/Device-Tracking/
+├── app.js
+├── package.json
+├── public/js/script.js
+├── views/index.ejs
+├── start-device-tracker.sh        ✅
+├── device-tracker.service         ✅
+```
 
-- Socket.IO for real-time communication
-- Leaflet for interactive map display
-- JavaScript for client-side logic
-- Node.js for server-side logic
+---
 
-Contributing
+## 🧰 Step-by-Step Setup Instructions
 
-Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request.
+### ✅ 1. Install Node.js Using `nvm`
 
-License
+If not already installed:
 
-This project is licensed under the MIT License. See LICENSE for details.
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
+nvm install 20
+nvm use 20
+nvm alias default 20
+```
+
+Verify:
+
+```bash
+node -v
+# Should be v20.x.x
+```
+
+---
+
+### ✅ 2. Install Project Dependencies
+
+```bash
+cd ~/Device-Tracking
+npm install
+```
+
+---
+
+### ✅ 3. Configure `start-device-tracker.sh`
+
+> This script is already in your project root.
+
+**Ensure it looks like this:**
+
+```bash
+#!/bin/bash
+
+exec > /tmp/device-tracker.log 2>&1
+
+export NVM_DIR="$HOME/.nvm"
+source "$NVM_DIR/nvm.sh"
+nvm use 20
+
+cd "$HOME/Device-Tracking"
+DEVICE_NAME="$(whoami)"
+export DEVICE_NAME
+
+node app.js
+```
+
+Then make it executable:
+
+```bash
+chmod +x ~/start-device-tracker.sh
+```
+
+---
+
+### ✅ 4. Register the Service
+
+You already have `device-tracker.service` inside your repo.  
+You just need to **copy it** to the correct system location:
+
+```bash
+sudo cp ~/Device-Tracking/device-tracker.service /etc/systemd/system/
+```
+
+---
+
+### ✅ 5. Enable and Start the Service
+
+```bash
+sudo systemctl daemon-reexec
+sudo systemctl daemon-reload
+sudo systemctl enable device-tracker.service
+sudo systemctl start device-tracker.service
+```
+
+---
+
+### ✅ 6. View Logs or Debug
+
+To check service output in real time:
+
+```bash
+journalctl -u device-tracker.service -f
+```
+
+Or view the full output log:
+```bash
+cat /tmp/device-tracker.log
+```
+
+---
+
+## 🗺️ Access the Tracker
+
+Open your browser and go to:
+
+```
+http://localhost:3000
+```
+
+You’ll see a map with a marker labeled with your Linux username.
+
+---
+
+## 🔍 How It Works
+
+| Component | Role |
+|----------|------|
+| `start-device-tracker.sh` | Starts the server and sets device name to `whoami` |
+| `device-tracker.service` | Calls the script automatically on system boot |
+| `index.ejs` | Injects the device name into the browser |
+| `script.js` | Sends the location and device name to the server |
+| `app.js` | Receives and broadcasts the location to all connected clients |
+
+---
+
+## 🧹 Service Management
+
+| Action         | Command                                  |
+|----------------|-------------------------------------------|
+| Restart        | `sudo systemctl restart device-tracker`  |
+| Stop           | `sudo systemctl stop device-tracker`     |
+| Disable        | `sudo systemctl disable device-tracker`  |
+
+---
+
+## ✅ Summary
+
+- ✔ You **already have** all required files.
+- 🔧 You only need to **install Node**, **install dependencies**, and **copy & enable the service**.
+- 🔁 The service will now start every time your system boots and track your location automatically.

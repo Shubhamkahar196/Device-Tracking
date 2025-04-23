@@ -1,10 +1,11 @@
+
 const socket = io();
 
 if (navigator.geolocation) {
   navigator.geolocation.watchPosition(
     (position) => {
       const { latitude, longitude } = position.coords;
-      socket.emit("send-location", { latitude, longitude });
+      socket.emit("send-location", { latitude, longitude, device: deviceName });
     },
     (error) => {
       console.error(error);
@@ -26,12 +27,17 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 const markers = {};
 
 socket.on("receive-location", (data) => {
-  const { id, latitude, longitude } = data;
+  const { id, latitude, longitude, device } = data;
   map.setView([latitude, longitude]);
+
   if (markers[id]) {
     markers[id].setLatLng([latitude, longitude]);
+    markers[id].getPopup()?.setContent(device);
   } else {
-    markers[id] = L.marker([latitude, longitude]).addTo(map);
+    markers[id] = L.marker([latitude, longitude])
+      .addTo(map)
+      .bindPopup(device)
+      .openPopup();
   }
 });
 
@@ -41,12 +47,3 @@ socket.on("user-disconnect", (id) => {
     delete markers[id];
   }
 });
-
-
-
-
-
-
-
-
-
