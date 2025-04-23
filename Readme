@@ -37,9 +37,9 @@ Make sure your folder looks like this:
 
 ### ✅ 1. Install Node.js Using `nvm`
 
-If not already installed:
+If not already installed, run:
 
-```bash
+```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 source ~/.bashrc
 nvm install 20
@@ -49,7 +49,7 @@ nvm alias default 20
 
 Verify:
 
-```bash
+```
 node -v
 # Should be v20.x.x
 ```
@@ -58,7 +58,7 @@ node -v
 
 ### ✅ 2. Install Project Dependencies
 
-```bash
+```
 cd ~/Device-Tracking
 npm install
 ```
@@ -67,11 +67,9 @@ npm install
 
 ### ✅ 3. Configure `start-device-tracker.sh`
 
-> This script is already in your project root.
+This file already exists in your home directory. Make sure it contains:
 
-**Ensure it looks like this:**
-
-```bash
+```
 #!/bin/bash
 
 exec > /tmp/device-tracker.log 2>&1
@@ -87,20 +85,19 @@ export DEVICE_NAME
 node app.js
 ```
 
-Then make it executable:
+Make it executable:
 
-```bash
+```
 chmod +x ~/start-device-tracker.sh
 ```
 
 ---
 
-### ✅ 4. Register the Service
+### ✅ 4. Register the systemd Service
 
-You already have `device-tracker.service` inside your repo.  
-You just need to **copy it** to the correct system location:
+Copy the service file into the systemd directory:
 
-```bash
+```
 sudo cp ~/Device-Tracking/device-tracker.service /etc/systemd/system/
 ```
 
@@ -108,7 +105,7 @@ sudo cp ~/Device-Tracking/device-tracker.service /etc/systemd/system/
 
 ### ✅ 5. Enable and Start the Service
 
-```bash
+```
 sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 sudo systemctl enable device-tracker.service
@@ -119,14 +116,15 @@ sudo systemctl start device-tracker.service
 
 ### ✅ 6. View Logs or Debug
 
-To check service output in real time:
+To follow logs in real time:
 
-```bash
+```
 journalctl -u device-tracker.service -f
 ```
 
-Or view the full output log:
-```bash
+Or check the full log file:
+
+```
 cat /tmp/device-tracker.log
 ```
 
@@ -134,40 +132,40 @@ cat /tmp/device-tracker.log
 
 ## 🗺️ Access the Tracker
 
-Open your browser and go to:
+Open your browser and visit:
 
 ```
 http://localhost:3000
 ```
 
-You’ll see a map with a marker labeled with your Linux username.
+You should see a map with your location and device name.
 
 ---
 
 ## 🔍 How It Works
 
-| Component | Role |
-|----------|------|
-| `start-device-tracker.sh` | Starts the server and sets device name to `whoami` |
-| `device-tracker.service` | Calls the script automatically on system boot |
-| `index.ejs` | Injects the device name into the browser |
-| `script.js` | Sends the location and device name to the server |
-| `app.js` | Receives and broadcasts the location to all connected clients |
+| Component               | Role                                               |
+|-------------------------|----------------------------------------------------|
+| `start-device-tracker.sh` | Launches the app and sets the device name         |
+| `device-tracker.service`  | Runs the script automatically on system boot      |
+| `index.ejs`               | Injects the `DEVICE_NAME` into the frontend       |
+| `script.js`               | Sends location + name to the backend via socket   |
+| `app.js`                  | Broadcasts data to all connected clients          |
 
 ---
 
 ## 🧹 Service Management
 
-| Action         | Command                                  |
-|----------------|-------------------------------------------|
-| Restart        | `sudo systemctl restart device-tracker`  |
-| Stop           | `sudo systemctl stop device-tracker`     |
-| Disable        | `sudo systemctl disable device-tracker`  |
+| Action   | Command                                  |
+|----------|-------------------------------------------|
+| Restart  | `sudo systemctl restart device-tracker`  |
+| Stop     | `sudo systemctl stop device-tracker`     |
+| Disable  | `sudo systemctl disable device-tracker`  |
 
 ---
 
 ## ✅ Summary
 
-- ✔ You **already have** all required files.
-- 🔧 You only need to **install Node**, **install dependencies**, and **copy & enable the service**.
-- 🔁 The service will now start every time your system boots and track your location automatically.
+- ✔ You already have all necessary files
+- 🔧 You just need to install Node, copy the service, and enable it
+- 🔁 It will now run automatically on every boot
