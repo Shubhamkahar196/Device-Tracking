@@ -67,7 +67,7 @@ npm install
 
 ### ✅ 3. Configure `start-device-tracker.sh`
 
-This file already exists in your home directory. Make sure it contains:
+This file already exists in repo copt it to home directory. Make sure it contains:
 
 ```
 #!/bin/bash
